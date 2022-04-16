@@ -1,0 +1,190 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>
+      Intro to MapView - Create a 2D map | Sample | ArcGIS API for JavaScript
+      4.23
+    </title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+      
+      body{
+          position:relative;
+      }
+
+      .top{
+        box-sizing: border-box;
+        height: 70px;
+        width: 100%;
+        background-color:rgb(0, 139, 69);
+        color: white;
+        padding-left: 40px;
+        box-sizing:border-box;
+      }
+      .top b{
+        line-height:70px;
+        font-size: 40px;
+      }
+      .top i{
+        line-height:70px;
+        font-size: 10px;
+      }
+      #basemapGalleryDiv {
+        position: absolute;
+        top:70px;
+        left: 85%;
+        height: 100%;
+        width: 200px;
+        z-index: 1;
+      }
+      #other{
+        position: absolute;
+        z-index: 1;
+        left:69% ;
+        top: 60%;
+        height: 300px;
+      }
+      #final{
+        /*height: 350px;*/
+        position: absolute;
+        z-index: 1;
+        left: 72%;
+        top: 70px;
+      }
+      .top #searchdiv{
+        float: right;
+        box-sizing: border-box;
+        /* background-color: black;
+        height: 10px;
+        width: 10px; */
+        z-index: 1;
+        margin-top: 20px;
+        margin-right: 20px;
+      }
+
+      
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.23/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.23/"></script>
+
+    <script>
+      require(["esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/Legend", "esri/widgets/ScaleBar", "esri/widgets/Search", "esri/widgets/LayerList", "esri/widgets/BasemapGallery", "esri/widgets/Compass", "esri/widgets/Print", "esri/widgets/Measurement"], (Map, MapView, FeatureLayer, Legend, ScaleBar, Search, LayerList, BasemapGallery, Compass, Print, Measurement) => {
+        const layer = new FeatureLayer({
+         // URL to the service
+          url: "https://www.geosceneonline.cn/server/rest/services/Hosted/Incidents12/FeatureServer"
+          });
+
+        const map = new Map({
+          basemap: "topo-vector",
+          layers:[layer]
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 14,
+          center: [119.365, 25.726] // longitude, latitude
+        });
+        
+        const measurement = new Measurement({
+          view: view,
+        activeTool: "distance"
+        });
+        view.ui.add(measurement, "top-right");
+        // Switch between area and distance measurement
+        function switchTool() {
+        const tool = measurement.activeTool === "distance" ? "area" : "distance";
+      measurement.activeTool = tool;
+        }
+        
+        let legend = new Legend({
+         view: view
+         });
+
+         view.ui.add(legend, "bottom-right");
+         
+         let scaleBar = new ScaleBar({
+         view: view,
+         style: "ruler"
+         });
+        // Add widget to the bottom left corner of the view
+        view.ui.add(scaleBar, {
+        position: "bottom-left"
+        });
+
+       const searchWidget = new Search({
+        view: view
+       });
+      // Adds the search widget below other elements in
+      // the top left corner of the view
+       view.ui.add(searchWidget, {
+       position: "top-left",
+        index: 2
+        });
+        
+        let layerList = new LayerList({
+         view: view
+      });
+     // Adds widget below other elements in the top left corner of the view
+    view.ui.add(layerList, {
+     position: "top-left"
+       });
+       
+       let basemapGallery = new BasemapGallery({
+      view: view
+      });
+        // Add widget to the top right corner of the view
+      view.ui.add(basemapGallery, {
+     position: "top-right"
+      });
+      
+    let compass = new Compass({
+    view: view
+    });
+    // adds the compass to the top left corner of the MapView
+    view.ui.add(compass, "bottom-left");
+    
+   const print = new Print({
+    view: view,
+    // specify your own print service
+    printServiceUrl:
+     "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
+    });
+    // Adds widget below other elements in the top left corner of the view
+    view.ui.add(print, {
+  position: "top-left"
+  });
+  
+  
+
+
+      });
+    </script>
+  </head>
+     <body>
+    <div id="basemapGalleryDiv"></div>
+    <div class="top">
+      <b>福清市市区建筑整体概况</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <i>（不完全统计）</i>
+      <div id="searchdiv"></div>
+    </div>
+    <div id="viewDiv"></div>
+    <div id="other"></div>
+    <div id="final"></div>
+  </body>
+</html>
